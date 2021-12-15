@@ -211,7 +211,7 @@ impl SudokuGenerator {
     fn find_good_random_guess(&mut self) -> Candidate {
         let best_cell = self.find_cell_min_poss();
         let poss_digits = self.cell_poss_digits[best_cell];
-        let choice = rand::thread_rng().gen_range(0, poss_digits.len());
+        let choice = rand::thread_rng().gen_range((0..poss_digits.len()));
         let digit = poss_digits.into_iter().nth(choice as usize).unwrap();
         Candidate {
             digit,
