@@ -1,4 +1,5 @@
 use crate::Sudoku;
+use macroquad::prelude::rand::{gen_range, rand};
 
 /// A transformation that results in an equivalent sudoku
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -57,25 +58,27 @@ impl Transformation {
     }
 
     pub(crate) fn random() -> Self {
-        use rand::{distributions::Distribution, Rng};
+        // use rand::{distributions::Distribution, Rng};
         // SmallRng is a good 10% faster, but it uses XorShiftRng which can fail some statistical tests
         // There are some adaptions that fix this, but I don't know if Rust implements them.
         //let rng = &mut rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap();
-        let rng = &mut rand::thread_rng();
+
 
         let mut digits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
         // manual top-down Fisher-Yates shuffle. Needs only 1 ranged random num rather than 9
-        let mut permutation = rng.gen_range((90..362_880)); // 9!
+        let mut permutation = gen_range(90, 362_880); // 9!
         for n_choices in (2..10).rev() {
             let num = permutation % n_choices;
             permutation /= n_choices;
             digits.swap(n_choices as usize - 1, num as usize);
         }
-        let transpose = rng.gen();
+        let mut transpose = false;
+        if gen_range(0, 1) > 0 {
+            transpose = true
+        }
 
-        let range = rand::distributions::Uniform::new(0u8, 6);
-        let mut perm = || Permutation3::new(range.sample(rng));
+        let mut perm = || Permutation3::new( gen_range(0u8, 6));
 
         Transformation {
             transpose,

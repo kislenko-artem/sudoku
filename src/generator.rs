@@ -1,5 +1,5 @@
-use rand::seq::SliceRandom;
-use rand::Rng;
+use macroquad::rand::ChooseRandom;
+use macroquad::rand::gen_range;
 
 use crate::bitset::Set;
 use crate::board::Candidate;
@@ -211,7 +211,7 @@ impl SudokuGenerator {
     fn find_good_random_guess(&mut self) -> Candidate {
         let best_cell = self.find_cell_min_poss();
         let poss_digits = self.cell_poss_digits[best_cell];
-        let choice = rand::thread_rng().gen_range((0..poss_digits.len()));
+        let choice = gen_range(0, poss_digits.len());
         let digit = poss_digits.into_iter().nth(choice as usize).unwrap();
         Candidate {
             digit,
@@ -266,8 +266,8 @@ impl SudokuGenerator {
         // fill first row with a permutation of 1...9
         // not necessary, but ~15% faster
         let mut stack = Vec::with_capacity(N_CELLS);
-        let mut perm = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        perm.shuffle(&mut rand::thread_rng());
+        let mut perm = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        perm.shuffle();
 
         stack.extend(
             (0..9)

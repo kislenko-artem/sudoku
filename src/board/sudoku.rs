@@ -1,4 +1,4 @@
-use rand::seq::SliceRandom;
+use macroquad::rand::ChooseRandom;
 
 use crate::consts::*;
 use crate::errors::{BlockParseError, InvalidEntry, LineParseError, NotEnoughRows};
@@ -214,12 +214,12 @@ impl Sudoku {
         // and backtrack on error
 
         // generate random order
-        let mut cell_order = [0; N_CELLS];
+        let mut cell_order = [0; N_CELLS].to_vec();
         cell_order
             .iter_mut()
             .enumerate()
             .for_each(|(cell, place)| *place = cell);
-        cell_order.shuffle(&mut rand::thread_rng());
+        cell_order.shuffle();
 
         // With symmetries, many cells are equivalent.
         // If we've already visited one cell in a symmetry class, we can skip ahead
